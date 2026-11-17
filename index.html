@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>श्री संत सावता माळी अँड कंपनी, सोनगीर</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans Devanagari', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Navbar / Header -->
+    <header class="bg-green-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl md:text-3xl font-bold tracking-wide">🌿 श्री संत सावता माळी अँड कंपनी</h1>
+                <p class="text-green-100 text-sm md:text-base">भाजीपाला कमिशन एजंट, सोनगीर (ता. जि. धुळे)</p>
+            </div>
+            <div class="flex flex-wrap gap-2 justify-center">
+                <a href="#rates" class="bg-green-800 hover:bg-green-900 px-3 py-1.5 rounded-lg text-sm font-medium transition">आजचे बाजारभाव</a>
+                <a href="#register" class="bg-green-800 hover:bg-green-900 px-3 py-1.5 rounded-lg text-sm font-medium transition">शेतकरी नोंदणी</a>
+                <button onclick="toggleAdminModal()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 px-4 py-1.5 rounded-lg text-sm font-bold shadow transition">ॲडमिन लॉगिन</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="bg-gradient-to-r from-green-600 to-emerald-700 text-white py-10 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl md:text-4xl font-bold mb-3">शेतकरी आणि व्यापाऱ्यांचे विश्वासू केंद्र!</h2>
+            <p class="text-green-100 text-base md:text-lg mb-6">ताजा भाजीपाला योग्य भावात खरेदी-विक्री आणि पारदर्शक व्यवहार.</p>
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 inline-block text-left text-sm md:text-base border border-white/20">
+                <p><strong>प्रोप्रा.:</strong> श्री गणेश बन्सीलाल माळी | श्री बन्सीलाल भिवसन माळी</p>
+                <p><strong>ठिकाण:</strong> सोनगीर, ता. जि. धुळे, महाराष्ट्र</p>
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+
+        <!-- Live Market Rates Section -->
+        <section id="rates" class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4 gap-2">
+                <div>
+                    <h3 class="text-2xl font-bold text-green-800">📊 आजचे भाजीपाला बाजारभाव</h3>
+                    <p class="text-slate-500 text-sm">दिनांक: <span id="currentDate"></span></p>
+                </div>
+                <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full">दररोज ताजे अपडेट्स</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-green-50 text-green-900 border-b-2 border-green-200">
+                            <th class="p-3 font-bold">क्र.</th>
+                            <th class="p-3 font-bold">भाजीपाल्याचे नाव</th>
+                            <th class="p-3 font-bold">युनिट (माप)</th>
+                            <th class="p-3 font-bold">किमान भाव (₹)</th>
+                            <th class="p-3 font-bold">कमाल भाव (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ratesTableBody" class="divide-y divide-slate-200 text-sm md:text-base">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Farmer / Trader Registration Section -->
+        <section id="register" class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+            <h3 class="text-2xl font-bold text-green-800 mb-2">📝 शेतकरी / व्यापारी माल नोंदणी</h3>
+            <p class="text-slate-500 text-sm mb-6">आपला भाजीपाला विक्रीसाठी किंवा खरेदीसाठी खालील फॉर्म भरा. नोंदणी होताच WhatsApp वर माहिती मिळेल.</p>
+
+            <form id="registrationForm" onsubmit="handleRegistration(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">नोंदणी प्रकार निवडा *</label>
+                    <select id="regType" required class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="शेतकरी (Farmer)">शेतकरी (Farmer)</option>
+                        <option value="व्यापारी (Trader)">व्यापारी (Trader)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">पूर्ण नाव *</label>
+                    <input type="text" id="regName" required placeholder="उदा. राम पाटील" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">मोबाईल नंबर *</label>
+                    <input type="tel" id="regPhone" required pattern="[0-9]{10}" placeholder="10 अंकी मोबाईल नंबर" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">गाव / शहर *</label>
+                    <input type="text" id="regVillage" required placeholder="उदा. सोनगीर" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">भाजीपाल्याचे नाव *</label>
+                    <input type="text" id="regVeg" required placeholder="उदा. टोमॅटो, वांगी, मिरची" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">अंदाजे प्रमाण *</label>
+                        <input type="number" id="regQty" required min="1" placeholder="उदा. 50" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">युनिट निवडा *</label>
+                        <select id="regUnit" required class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-green-500 outline-none">
+                            <option value="किलो (Kg)">किलो (Kg)</option>
+                            <option value="क्विंटल (Quintal)">क्विंटल (Quintal)</option>
+                            <option value="क्रेट (Crate)">क्रेट (Crate)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="md:col-span-2 pt-2">
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-md transition text-lg">
+                        ✅ नोंदणी करा आणि WhatsApp पाठवा
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Admin Panel Section (Hidden until logged in) -->
+        <section id="adminDashboard" class="hidden bg-slate-900 text-white rounded-2xl shadow-xl p-6 space-y-8 border-2 border-yellow-500">
+            <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-700 pb-4 gap-3">
+                <div>
+                    <h3 class="text-2xl font-bold text-yellow-400">🔐 ॲडमिन कंट्रोल पॅनल</h3>
+                    <p class="text-slate-300 text-sm">श्री संत सावता माळी अँड कंपनी, सोनगीर</p>
+                </div>
+                <button onclick="logoutAdmin()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold">लॉगआउट (Logout)</button>
+            </div>
+
+            <!-- Add / Update Vegetable Rate -->
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <h4 class="text-lg font-bold text-green-400 mb-4">➕ नवीन बाजारभाव जोडा / अपडेट करा</h4>
+                <form onsubmit="addOrUpdateRate(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <input type="text" id="adminVegName" required placeholder="भाजीचे नाव (उदा. टोमॅटो)" class="p-2.5 rounded bg-slate-700 text-white border border-slate-600 outline-none">
+                    <select id="adminVegUnit" required class="p-2.5 rounded bg-slate-700 text-white border border-slate-600 outline-none">
+                        <option value="किलो (Kg)">किलो (Kg)</option>
+                        <option value="क्विंटल (Quintal)">क्विंटल (Quintal)</option>
+                        <option value="क्रेट (Crate)">क्रेट (Crate)</option>
+                    </select>
+                    <input type="number" id="adminMinPrice" required placeholder="किमान भाव (₹)" class="p-2.5 rounded bg-slate-700 text-white border border-slate-600 outline-none">
+                    <input type="number" id="adminMaxPrice" required placeholder="कमाल भाव (₹)" class="p-2.5 rounded bg-slate-700 text-white border border-slate-600 outline-none">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded transition">भाव सेव्ह करा</button>
+                </form>
+
+                <!-- Admin Rate List with Delete -->
+                <div class="mt-4 overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-slate-400 border-b border-slate-700">
+                                <th class="p-2">भाजीपाला</th>
+                                <th class="p-2">युनिट</th>
+                                <th class="p-2">किमान (₹)</th>
+                                <th class="p-2">कमाल (₹)</th>
+                                <th class="p-2">कृती</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminRatesList" class="divide-y divide-slate-700"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Farmer Registrations & PDF Export -->
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+                    <h4 class="text-lg font-bold text-yellow-400">📋 शेतकरी / व्यापारी नोंदणी यादी</h4>
+                    <div class="flex gap-2">
+                        <button onclick="downloadRegistrationsPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow flex items-center gap-1">
+                            📄 PDF डाऊनलोड करा
+                        </button>
+                        <button onclick="clearRegistrations()" class="bg-red-700 hover:bg-red-800 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+                            सर्व नोंदी पुसा
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Printable PDF Area -->
+                <div id="pdfReportArea" class="bg-white text-slate-900 p-4 rounded-lg overflow-x-auto">
+                    <div class="text-center border-b pb-3 mb-3">
+                        <h2 class="text-xl font-bold text-green-800">श्री संत सावता माळी अँड कंपनी, सोनगीर</h2>
+                        <p class="text-xs text-slate-600">भाजीपाला कमिशन एजंट | शेतकरी व व्यापारी नोंदणी अहवाल</p>
+                        <p class="text-xs font-semibold mt-1">दिनांक: <span id="pdfDate"></span></p>
+                    </div>
+                    <table class="w-full text-left border-collapse text-xs md:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-300">
+                                <th class="p-2 border">क्र.</th>
+                                <th class="p-2 border">प्रकार</th>
+                                <th class="p-2 border">नाव</th>
+                                <th class="p-2 border">मोबाईल</th>
+                                <th class="p-2 border">गाव</th>
+                                <th class="p-2 border">भाजीपाला</th>
+                                <th class="p-2 border">प्रमाण (युनिट)</th>
+                                <th class="p-2 border">वेळ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminRegistrationsBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-xl font-bold text-slate-800">🔐 ॲडमिन लॉगिन</h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">युजरनेम (Username)</label>
+                    <input type="text" id="adminUser" required placeholder="Shree Sant Sawta Mali and Company" class="w-full border rounded-lg p-2.5 bg-slate-50 outline-none focus:ring-2 focus:ring-green-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">पासवर्ड (Password)</label>
+                    <input type="password" id="adminPass" required placeholder="पासवर्ड टाका" class="w-full border rounded-lg p-2.5 bg-slate-50 outline-none focus:ring-2 focus:ring-green-600">
+                </div>
+                <p id="loginError" class="text-red-600 text-xs font-semibold hidden">युजरनेम किंवा पासवर्ड चुकीचा आहे!</p>
+                <button type="submit" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-lg transition">लॉगिन करा</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 text-sm mt-12">
+        <p>© 2026 श्री संत सावता माळी अँड कंपनी, सोनगीर (धुळे). सर्व हक्क राखीव.</p>
+    </footer>
+
+    <script>
+        // Default initial rates
+        const defaultRates = [
+            { name: "टोमॅटो (Tomato)", unit: "क्रेट (Crate)", min: 300, max: 450 },
+            { name: "हिरवी मिरची (Chilli)", unit: "क्विंटल (Quintal)", min: 2500, max: 3200 },
+            { name: "वांगी (Brinjal)", unit: "किलो (Kg)", min: 20, max: 35 },
+            { name: "कांदा (Onion)", unit: "क्विंटल (Quintal)", min: 1800, max: 2400 },
+            { name: "फुलकोबी (Cauliflower)", unit: "किलो (Kg)", min: 15, max: 25 }
+        ];
+
+        // Load data from localStorage
+        let rates = JSON.parse(localStorage.getItem('sawta_rates')) || defaultRates;
+        let registrations = JSON.parse(localStorage.getItem('sawta_registrations')) || [];
+        let isAdminLoggedIn = false;
+
+        // Set Current Date
+        const todayStr = new Date().toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('currentDate').innerText = todayStr;
+        document.getElementById('pdfDate').innerText = todayStr;
+
+        function renderRates() {
+            const tbody = document.getElementById('ratesTableBody');
+            const adminList = document.getElementById('adminRatesList');
+            tbody.innerHTML = '';
+            adminList.innerHTML = '';
+
+            rates.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-medium">${index + 1}</td>
+                        <td class="p-3 font-bold text-slate-800">${item.name}</td>
+                        <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md text-xs font-semibold">${item.unit}</span></td>
+                        <td class="p-3 font-semibold text-slate-700">₹ ${item.min}</td>
+                        <td class="p-3 font-bold text-green-700">₹ ${item.max}</td>
+                    </tr>
+                `;
+
+                adminList.innerHTML += `
+                    <tr>
+                        <td class="p-2 font-semibold">${item.name}</td>
+                        <td class="p-2">${item.unit}</td>
+                        <td class="p-2">₹ ${item.min}</td>
+                        <td class="p-2">₹ ${item.max}</td>
+                        <td class="p-2">
+                            <button onclick="deleteRate(${index})" class="text-red-400 hover:text-red-300 font-bold text-xs">हटवा (Delete)</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderRegistrations() {
+            const tbody = document.getElementById('adminRegistrationsBody');
+            tbody.innerHTML = '';
+            if (registrations.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-500">अद्याप कोणतीही नोंदणी नाही.</td></tr>`;
+                return;
+            }
+            registrations.forEach((reg, idx) => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2 border">${idx + 1}</td>
+                        <td class="p-2 border">${reg.type}</td>
+                        <td class="p-2 border font-semibold">${reg.name}</td>
+                        <td class="p-2 border">${reg.phone}</td>
+                        <td class="p-2 border">${reg.village}</td>
+                        <td class="p-2 border font-semibold">${reg.veg}</td>
+                        <td class="p-2 border font-bold text-green-700">${reg.qty} ${reg.unit}</td>
+                        <td class="p-2 border text-xs">${reg.time}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleRegistration(e) {
+            e.preventDefault();
+            const type = document.getElementById('regType').value;
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const village = document.getElementById('regVillage').value.trim();
+            const veg = document.getElementById('regVeg').value.trim();
+            const qty = document.getElementById('regQty').value.trim();
+            const unit = document.getElementById('regUnit').value;
+            const time = new Date().toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+
+            const newReg = { type, name, phone, village, veg, qty, unit, time };
+            registrations.push(newReg);
+            localStorage.setItem('sawta_registrations', JSON.stringify(registrations));
+            renderRegistrations();
+
+            const msg = `*श्री संत सावता माळी अँड कंपनी, सोनगीर*%0A*नवीन माल नोंदणी*%0A------------------------%0A*प्रकार:* ${type}%0A*नाव:* ${name}%0A*मोबाईल:* ${phone}%0A*गाव:* ${village}%0A*भाजीपाला:* ${veg}%0A*प्रमाण:* ${qty} ${unit}%0A*दिनांक:* ${todayStr}`;
+            
+            alert("तुमची नोंदणी यशस्वीरित्या झाली आहे! आता WhatsApp मेसेज पाठवला जाईल.");
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+            document.getElementById('registrationForm').reset();
+        }
+
+        function toggleAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+
+            if (user === "Shree Sant Sawta Mali and Company" && pass === "Shyam2009") {
+                isAdminLoggedIn = true;
+                toggleAdminModal();
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                document.getElementById('adminDashboard').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminDashboard').classList.add('hidden');
+        }
+
+        function addOrUpdateRate(e) {
+            e.preventDefault();
+            const name = document.getElementById('adminVegName').value.trim();
+            const unit = document.getElementById('adminVegUnit').value;
+            const min = document.getElementById('adminMinPrice').value;
+            const max = document.getElementById('adminMaxPrice').value;
+
+            rates.push({ name, unit, min, max });
+            localStorage.setItem('sawta_rates', JSON.stringify(rates));
+            renderRates();
+
+            document.getElementById('adminVegName').value = '';
+            document.getElementById('adminMinPrice').value = '';
+            document.getElementById('adminMaxPrice').value = '';
+        }
+
+        function deleteRate(index) {
+            rates.splice(index, 1);
+            localStorage.setItem('sawta_rates', JSON.stringify(rates));
+            renderRates();
+        }
+
+        function clearRegistrations() {
+            if (confirm("तुम्हाला खात्री आहे की सर्व नोंदणी यादी पुसायची आहे?")) {
+                registrations = [];
+                localStorage.setItem('sawta_registrations', JSON.stringify(registrations));
+                renderRegistrations();
+            }
+        }
+
+        function downloadRegistrationsPDF() {
+            const element = document.getElementById('pdfReportArea');
+            const opt = {
+                margin:       0.4,
+                filename:     `Shree_Sant_Sawta_Registrations_${new Date().toISOString().slice(0,10)}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // Initialize view
+        renderRates();
+        renderRegistrations();
+    </script>
+</body>
+</html>
